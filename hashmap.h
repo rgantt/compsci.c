@@ -11,17 +11,23 @@ typedef struct {
 	val_t value;
 } Entry; 
  
+typedef struct Node {
+    Entry entry;
+    struct Node *next;
+} Node;
+ 
 typedef struct {
 	int size;
 	int capacity;
-	Entry *entries[ INITIAL_CAPACITY ];
+    Node **entries;
 } HashMap;
 
+HashMap *createMap( int size, int capacity );
 HashMap *new();
 void put( HashMap *map, key_t key, val_t value );
 char *get( HashMap *map, key_t key );
 void delete( HashMap *map, key_t key );
-HashMap resize( HashMap *map, int capacity );
+void resize( HashMap *map, int capacity );
 int hash( HashMap *map, key_t key );
 
 #endif

@@ -5,7 +5,7 @@
 
 /**
  * Implementation of a { char * -> char * } hash map in vanilla C.
- * Does not handle key collisions!
+ * Handles collisions via chaining, as well as automatic resizing.
  *
  * @author ryangant
  * @date 2012-03-22
@@ -14,21 +14,34 @@
 #define RESIZE_THRESHOLD 0.80
 #define SCALING_FACTOR 2
  
-HashMap resize( HashMap *map, int capacity ) {
-	printf("Should have resized here!\n");
-	return *map;
+void resize( HashMap *map, int capacity ) {
+    HashMap *newMap = createMap( map->size, capacity );
+    int i;
+    for( i = 0; i < map->capacity; i++ ) {
+        Node *current = map->entries[i];
+        while( current != NULL ) {
+            put( newMap, current->entry.key, current->entry.value );
+            current = current->next;
+        }
+    }
+	*map = *newMap;
 }
 
 HashMap *new() {
-	HashMap *map = (HashMap *) malloc( sizeof( HashMap ) );
+	return createMap( 0, INITIAL_CAPACITY );
+}
+
+HashMap *createMap( int size, int capacity ) {
+	HashMap *map = malloc( sizeof( HashMap ) );
 	int i;
 	if( !map ) {
 		printf("Could not allocate memory for new HashMap!");
-		return NULL;
+		exit(1);
 	}
-	map->size = 0;
-	map->capacity = INITIAL_CAPACITY;
-	for( i = 0; i < INITIAL_CAPACITY; i++ ) {
+	map->size = size;
+	map->capacity = capacity;
+    map->entries = malloc( sizeof( Node ) * capacity );
+	for( i = 0; i < capacity; i++ ) {
 		map->entries[i] = NULL;
 	}
 	return map;
@@ -38,19 +51,35 @@ void put( HashMap *map, key_t key, val_t value ) {
 	if( (float)( map->size + 1 ) / map->capacity > RESIZE_THRESHOLD ) {
 		resize( map, map->capacity * SCALING_FACTOR );
 	}
-	int h = hash( map, key );
-	Entry *entry = (Entry *) malloc( sizeof( Entry ) );
-	// i don't like these assignments
-	entry->key = key;
-	entry->value = value;
-	map->entries[ h ] = entry;
+    Entry *entry = malloc( sizeof( Entry ) );
+    entry->key = key;
+    entry->value = value;
+    
+    Node *new = malloc( sizeof( Node ) );
+    new->entry = *entry;
+    new->next = NULL;
+    
+    int i = hash( map, key );
+    if( map->entries[i] == NULL ) {
+        map->entries[i] = new;
+    } else { 
+        Node *collision = map->entries[i];
+        while( collision->next != NULL ) {
+            collision = collision->next;
+        }
+        collision->next = new;
+    }
 	map->size++;
 }
 
 char *get( HashMap *map, key_t key ) {
 	int h = hash( map, key );
 	if( map->entries[ h ] != NULL ) {
-		return map->entries[ h ]->value;
+        Node *current = map->entries[h];
+        while( current->next != NULL && current->entry.key != key ) {
+            current = current->next;
+        }
+		return current->entry.value;
 	}
 	return NULL;
 }
