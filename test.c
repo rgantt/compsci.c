@@ -1,10 +1,36 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "hashmap.h"
 
 int main( int argc, char **argv ) {
     HashMap *map = new();
+    
+    // Make an arbitrarily typed blob
+    typedef struct blob {
+        int i;
+        int j;
+        char* string;
+        char* anotherString;
+    } blob;
+    blob *foo = malloc( sizeof(blob) );
+
+    // Give it some data so we can make sure we've still got it
+    foo->i = 99;
+    foo->j = 253087;
+    foo->string = "trololololo";
+    foo->anotherString = "yeyeyeyeye";
+
+    // Check it's working
+    printf(foo->string);
+
+    put( map, "foo", foo );
+    
+    // Get the thing we've stored in foo and cast it to blob* type
+    blob *newfoo = (blob*) get(map, "foo");
+    printf( "foo: %s\n", newfoo->anotherString );
+    
     put( map, "test", "this is a test" );
-    printf( "test: %s\n", get( map, "test" ) );
+    printf( "test: %s\n", (char *) get( map, "test" ) );
     put( map, "foo", "this is a foo" );
     put( map, "bar", "bar bar bar" );
     put( map, "tweak", "YOUR TAUNTAUN" );

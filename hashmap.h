@@ -4,7 +4,8 @@
 #define INITIAL_CAPACITY 10
 
 typedef char *key_t;
-typedef char *val_t;
+// values can be of arbitrary type; char * most commonly
+typedef void *val_t;
 
 typedef struct { 
     key_t key;
@@ -23,11 +24,11 @@ typedef struct {
 } HashMap;
 
 HashMap *new();
-HashMap *createMap( int size, int capacity );
-void put( HashMap *map, key_t key, val_t value );
-char *get( HashMap *map, key_t key );
-void delete( HashMap *map, key_t key );
-void resize( HashMap *map, int capacity );
-int hash( HashMap *map, key_t key );
+HashMap *createMap( int, int );
+void put( HashMap *, key_t, val_t );
+void *get( HashMap *, key_t );
+void delete( HashMap *, key_t );
+void resize( HashMap *, int );
+int hash( HashMap *, key_t );
 
 #endif
