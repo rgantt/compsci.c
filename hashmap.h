@@ -23,7 +23,7 @@ typedef struct {
     Node **entries;
 } HashMap;
 
-HashMap *new();
+HashMap *new( void );
 HashMap *createMap( int, int );
 void put( HashMap *, key_t, val_t );
 void *get( HashMap *, key_t );

@@ -16,6 +16,8 @@
 #define RESIZE_THRESHOLD 0.80
 #define SCALING_FACTOR 2
 
+void pretty_print( HashMap *map );
+
 /**
  * Replace a HashMap pointer with a newly-created HashMap containing all of the original elements but with "capacity"
  * indices in the internal array
@@ -69,7 +71,8 @@ HashMap *createMap( int size, int capacity ) {
 }
 
 /**
- * Bug: will currently write multiple key/value pairs with the same key.
+ * Places an entry object at a particular key. Handles situations where there are key collisions
+ * caused by inefficient hashing. Also handles key overwrite situations.
  */
 void put( HashMap *map, key_t key, val_t value ) {
     // determine whether our load factor is high enough to justify resizing
@@ -94,16 +97,23 @@ void put( HashMap *map, key_t key, val_t value ) {
     new->next = NULL;
 
     int i = hash( map, key );
+	// if there isn't a list at this index yet, start one
     if( map->entries[i] == NULL ) {
-        // if there's nothing at the current entry, add the list node
         map->entries[i] = new;
     } else { 
-        // move through the list until the end and add the new node
-        for( collision = map->entries[i]; collision->next != NULL; collision = collision->next );
-        collision->next = new;
+        // move through the list--if we find a list entry whose key is the same as the new entry, 
+		// replace it. otherwise, add the new node to the end of the list
+		collision = map->entries[i];
+		do {
+			// if the keys are the same, replace the entry objects
+			if( strcmp( collision->entry.key, key ) == 0 ) {
+				collision->entry = *entry;
+				// we've made our replacement, no sense continuing along the list
+				return;
+			}
+		} while( ( collision->next != NULL ) && ( collision = collision->next ) );
+		collision->next = new;
     }
-    // regardless of what happened, the size of our table has increased
-    map->size++;
 }
 
 /**
@@ -114,6 +124,7 @@ void *get( HashMap *map, key_t key ) {
     int h = hash( map, key );
     if( map->entries[h] != NULL ) {
         // finding a value at the hashed index isn't enough; we need to move through the list and match keys
+		// current implementation simply returns the first entry whose key is the same as the key_t key
         for( current = map->entries[h]; current->next != NULL && strcmp( current->entry.key, key ) != 0; current = current->next );
         return current->entry.value;
     }
@@ -125,8 +136,14 @@ void *get( HashMap *map, key_t key ) {
  */
 void delete( HashMap *map, key_t key ) {
     int h = hash( map, key );
-    free( map->entries[h] );
-    map->entries[h] = NULL;
+	Node *current;
+	for( current = map->entries[h]; current->next != NULL && strcmp( current->entry.key, key ) != 0; current = current->next );
+	current = current->next;
+	/**
+	 * no garbage collection; need to cleanup the allocated memory
+	 */
+    //free( map->entries[h] );
+    //map->entries[h] = NULL;
 }
 
 /**
@@ -138,4 +155,18 @@ int hash( HashMap *map, key_t key ) {
         total += (int)(key + i)[0];
     }
     return total % map->capacity;
+}
+
+void pretty_print( HashMap *map ) {
+	int i;
+	Node *entry;
+	for( i = 0; i < map->capacity; i++ ) {
+		printf( "entries[%d]:\n", i );
+		entry = map->entries[i];
+		if( entry == NULL ) continue;
+		while( entry->next != NULL ) {
+			printf( "\t%s => %s\n", entry->entry.key, entry->entry.value );
+			entry = entry->next;
+		}
+	}
 }

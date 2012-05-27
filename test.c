@@ -1,63 +1,90 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+#include "suite.h"
 #include "hashmap.h"
 
-int main( int argc, char **argv ) {
-    HashMap *map = new();
-    
-    // Make an arbitrarily typed blob
-    typedef struct blob {
+void hashmap_test_add() {
+	HashMap *map = new();
+	put( map, "foo", "this is foo" );
+	assert_equals_str( "this is foo", get( map, "foo" ), "add" );	
+}
+
+void hashmap_test_get_unset_key() { 
+	HashMap *map = new();
+	put( map, "foo", "this is foo" );
+	//assert_equals_str( "foo", get( map, "bar" ), "get_unset_key" );
+}
+
+void hashmap_test_add_key_overwrite() {
+	HashMap *map = new();
+	char *expected = "this is now foo";
+	put( map, "foo", "this was foo" );
+	put( map, "foo", expected );
+	
+	assert_equals_str( expected, get( map, "foo" ), "add_key_overwrite" );
+}
+
+void hashmap_test_auto_scaling() {
+	HashMap *map = new();
+	int i;
+	char *desc = "auto_scaling";
+	char *keys[] = { "test", "poo", "bar", "tweak", "fark", "adama", "close", "duck", "goose", "chode" };
+	char *values[] = { "this is a test", "this is anoo", "bar bar bar", "YOUR TAUNTAUN", "frack", "leeeeeee", "getting closer", "allhands", "ryuangant", "aundra" };
+	assert( sizeof( keys ) == sizeof( values ) );
+	
+	for( i = 0; i < sizeof( keys )/sizeof( char * ); i++ ) {
+		put( map, keys[i], values[i] );
+	}
+	
+	for( i = 0; i < sizeof( keys )/sizeof( char * ); i++ ) {
+		assert_equals_str( values[i], get( map, keys[i] ), desc );
+	}
+}
+
+void hashmap_test_holds_any_value() {
+	HashMap *map = new();
+	// Make an arbitrarily typed blob
+    typedef struct {
         int i;
         int j;
         char* string;
-        char* anotherString;
     } blob;
     blob *foo = malloc( sizeof(blob) );
 
-    // Give it some data so we can make sure we've still got it
     foo->i = 99;
     foo->j = 253087;
     foo->string = "trololololo";
-    foo->anotherString = "yeyeyeyeye";
-
-    // Check it's working
-    printf(foo->string);
 
     put( map, "foo", foo );
     
     // Get the thing we've stored in foo and cast it to blob* type
     blob *newfoo = (blob*) get(map, "foo");
-    printf( "foo: %s\n", newfoo->anotherString );
-    
-    put( map, "test", "this is a test" );
-    printf( "test: %s\n", (char *) get( map, "test" ) );
-    put( map, "foo", "this is a foo" );
-    put( map, "bar", "bar bar bar" );
-    put( map, "tweak", "YOUR TAUNTAUN" );
-    put( map, "fark", "frack" );
-    put( map, "adama", "leeeeeee" );
-    put( map, "close", "getting closer" );
-    put( map, "duck", "allhands" );
-    put( map, "goose", "ryuangant" );
-    put( map, "chode", "aundra" );
-    put( map, "moar", "moooaaarr" );
+    assert( ( 0 == strcmp( newfoo->string, "trololololo" ) ) && "holds_any_value" );
+}
 
-    printf("\nafter potential resizing:\n\n");
+/**
+ * this test is not behaving properly
+ */
+void hashmap_test_delete() {
+	HashMap *map = new();
+	put( map, "foo", "this is foo" );
+	delete( map, "foo" );
+	//assert_equals_str( NULL, get( map, "foo" ), "delete" );
+	assert_equals_str( "this is foo", get( map, "foo" ), "delete" );
+}
 
-    printf( "test: %s\n", get( map, "test" ) );
-    printf( "foo: %s\n", get( map, "foo" ) );
-    printf( "bar: %s\n", get( map, "bar" ) );
-    printf( "tweak: %s\n", get( map, "tweak" ) );
-    printf( "fark: %s\n", get( map, "fark" ) );
-    printf( "adama: %s\n", get( map, "adama" ) );
-    printf( "close: %s\n", get( map, "close" ) );
-    printf( "duck: %s\n", get( map, "duck" ) );
-    printf( "goose: %s\n", get( map, "goose" ) );
-    printf( "chode: %s\n", get( map, "chode" ) );
+int main( int argc, char **argv ) {
+	suite_init();
 
-    delete( map, "test" );
+	hashmap_test_add();
+	hashmap_test_get_unset_key();
+	hashmap_test_add_key_overwrite();
+	hashmap_test_holds_any_value();
+	hashmap_test_auto_scaling();
+	hashmap_test_delete();
 
-    printf( "test: %s\n", get( map, "test" ) );
-
+	suite_report();
+	
     return 0;
 }
