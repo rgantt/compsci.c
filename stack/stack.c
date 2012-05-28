@@ -41,12 +41,13 @@ void resize( stack *s, const int capacity ) {
 	stack *new_stack = create_stack( capacity );
 	new_stack->top = s->top;
 	stack *tmp_stack = create_stack( s->capacity );
+	element e;
 	// pop from original stack, push onto tmp. pop from tmp, push onto new, larger stack
-	while( peek( s ) != NULL ) {
-		push( tmp_stack, pop(s) );
+	while( ( e = pop(s) ) != NULL ) {
+		push( tmp_stack, e );
 	}
-	while( peek( tmp_stack ) != NULL ) {
-		push( new_stack, pop( tmp_stack ) );
+	while( ( e = pop(tmp_stack) ) != NULL ) {
+		push( new_stack, e );
 	}
 	*s = *new_stack;
 }
