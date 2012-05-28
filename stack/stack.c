@@ -73,10 +73,7 @@ void push( stack *s, element e ) {
  * Removes the top element from the stack, returns it, and updates the index pointer
  */
 element pop( stack *s ) {
-	if( empty( s ) == 0 ) {
-		return s->elements[s->top--];
-	}
-	return NULL;
+	return empty(s) ? NULL : s->elements[s->top--];
 }
 
 /**
