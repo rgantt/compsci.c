@@ -165,7 +165,7 @@ void pretty_print( HashMap *map ) {
 		entry = map->entries[i];
 		if( entry == NULL ) continue;
 		while( entry->next != NULL ) {
-			printf( "\t%s => %s\n", entry->entry.key, entry->entry.value );
+			printf( "\t%s => %s\n", entry->entry.key, (char *)entry->entry.value );
 			entry = entry->next;
 		}
 	}
