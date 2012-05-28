@@ -4,7 +4,7 @@
 #include "hashmap.h"
 
 /**
- * Implementation of a { char * -> char * } hash map in C.
+ * Implementation of a { char * => char * } hash map in C.
  * Handles collisions via chaining, as well as automatic resizing.
  *
  * Things would be simpler if I spent more time working with a List API
@@ -15,8 +15,6 @@
 
 #define RESIZE_THRESHOLD 0.80
 #define SCALING_FACTOR 2
-
-void pretty_print( HashMap *map );
 
 /**
  * Replace a HashMap pointer with a newly-created HashMap containing all of the original elements but with "capacity"
@@ -126,7 +124,9 @@ void *get( HashMap *map, key_t key ) {
         // finding a value at the hashed index isn't enough; we need to move through the list and match keys
 		// current implementation simply returns the first entry whose key is the same as the key_t key
         for( current = map->entries[h]; current->next != NULL && strcmp( current->entry.key, key ) != 0; current = current->next );
-        return current->entry.value;
+		if( strcmp( current->entry.key, key ) == 0 ) {
+			return current->entry.value;
+		}
     }
     return NULL;
 }
@@ -136,14 +136,26 @@ void *get( HashMap *map, key_t key ) {
  */
 void delete( HashMap *map, key_t key ) {
     int h = hash( map, key );
-	Node *current;
-	for( current = map->entries[h]; current->next != NULL && strcmp( current->entry.key, key ) != 0; current = current->next );
+	Node *current, *previous;
+	current = map->entries[h];
+	// if the list is only one element, just clear out the array index
+	if( current->next == NULL ) {
+		map->entries[h] = NULL;
+		free( current );
+		return;
+	}
+	previous = current;
 	current = current->next;
-	/**
-	 * no garbage collection; need to cleanup the allocated memory
-	 */
-    //free( map->entries[h] );
-    //map->entries[h] = NULL;
+	// if there is a multi-element list, keep a pointer to the previous element so we can
+	// easily update the pointers to remove the deleted one
+	do {
+		if( strcmp( current->entry.key, key ) == 0 ) {
+			Node *tmp = current;
+			previous->next = current->next;
+			free( tmp );
+		}
+	} while( ( current->next != NULL ) && ( current = current->next ) );
+	printf("looking to delete %s\n", key );
 }
 
 /**
@@ -157,6 +169,10 @@ int hash( HashMap *map, key_t key ) {
     return total % map->capacity;
 }
 
+/**
+ * Print out a nice-looking representation of a given hashmap. Shows the structure of the internal
+ * array, as well as the structure of the linked list that each index holds.
+ */
 void pretty_print( HashMap *map ) {
 	int i;
 	Node *entry;
@@ -164,9 +180,8 @@ void pretty_print( HashMap *map ) {
 		printf( "entries[%d]:\n", i );
 		entry = map->entries[i];
 		if( entry == NULL ) continue;
-		while( entry->next != NULL ) {
-			printf( "\t%s => %s\n", entry->entry.key, (char *)entry->entry.value );
-			entry = entry->next;
-		}
+		do {
+			printf( "\t%s => %s\n", entry->entry.key, (char *) entry->entry.value );
+		} while( ( entry->next != NULL ) && ( entry = entry->next ) );
 	}
 }

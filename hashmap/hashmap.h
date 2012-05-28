@@ -30,5 +30,6 @@ void *get( HashMap *, key_t );
 void delete( HashMap *, key_t );
 void resize( HashMap *, int );
 int hash( HashMap *, key_t );
+void pretty_print( HashMap * );
 
 #endif
