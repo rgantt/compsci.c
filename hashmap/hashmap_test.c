@@ -104,12 +104,12 @@ int main( int argc, char **argv ) {
 	suite_init();
 
 	hashmap_test_add();
-	hashmap_test_add();
-	hashmap_test_get_unset_key();
 	hashmap_test_add_hash_collision();
 	hashmap_test_add_key_collision();
-	hashmap_test_holds_any_value();
+	hashmap_test_get_unset_key();
+	hashmap_test_get();
 	hashmap_test_auto_scaling();
+	hashmap_test_holds_any_value();
 	hashmap_test_delete();
 	hashmap_test_delete_after_key_collision();
 	hashmap_test_delete_after_hash_collision();

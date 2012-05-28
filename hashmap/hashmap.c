@@ -155,7 +155,6 @@ void delete( HashMap *map, key_t key ) {
 			free( tmp );
 		}
 	} while( ( current->next != NULL ) && ( current = current->next ) );
-	printf("looking to delete %s\n", key );
 }
 
 /**
