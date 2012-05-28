@@ -3,8 +3,6 @@
 #include <string.h>
 #include "suite.h"
 
-extern struct suite;
-
 void suite_init() {
 	suite.tests_run = 0;
 	suite.tests_failed = 0;
