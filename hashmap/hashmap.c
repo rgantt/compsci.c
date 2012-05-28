@@ -44,7 +44,7 @@ hashmap *new_hashmap() {
 }
 
 /**
- * Allocates 
+ * Handles the actual allocation required to create a new hashmap 
  */
 hashmap *create_hashmap( int size, int capacity ) {
     // allocate the new memory for a hashmap
@@ -132,7 +132,7 @@ void *get( hashmap *map, key_t key ) {
 }
 
 /**
- * This is awful, and doesn't take into account the fact that we are chaining
+ * Given a key_t key, this function will remove the key, value pair from the map entirely
  */
 void delete( hashmap *map, key_t key ) {
     int h = hash( map, key );
