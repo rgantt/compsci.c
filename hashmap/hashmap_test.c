@@ -58,22 +58,22 @@ void hashmap_test_auto_scaling() {
 void hashmap_test_holds_any_value() {
 	HashMap *map = new();
 	// Make an arbitrarily typed blob
-    typedef struct {
-        int i;
-        int j;
-        char* string;
-    } blob;
-    blob *foo = malloc( sizeof(blob) );
+	typedef struct {
+		int i;
+		int j;
+		char* string;
+	} blob;
+	blob *foo = malloc( sizeof(blob) );
 
-    foo->i = 99;
-    foo->j = 253087;
-    foo->string = "trololololo";
+	foo->i = 99;
+	foo->j = 253087;
+	foo->string = "trololololo";
 
-    put( map, "foo", foo );
-    
-    // Get the thing we've stored in foo and cast it to blob* type
-    blob *newfoo = (blob*) get(map, "foo");
-    assert_equals_str( "trololololo", newfoo->string, "holds_any_value" );
+	put( map, "foo", foo );
+
+	// Get the thing we've stored in foo and cast it to blob* type
+	blob *newfoo = (blob*) get(map, "foo");
+	assert_equals_str( "trololololo", newfoo->string, "holds_any_value" );
 }
 
 void hashmap_test_delete() {
