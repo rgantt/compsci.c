@@ -73,33 +73,33 @@ hashmap *create_hashmap( int size, int capacity ) {
  * caused by inefficient hashing. Also handles key overwrite situations.
  */
 void put( hashmap *map, key_t key, val_t value ) {
-    // determine whether our load factor is high enough to justify resizing
-    if( (float)( map->size + 1 ) / map->capacity > RESIZE_THRESHOLD ) {
-        resize( map, map->capacity * SCALING_FACTOR );
-    }
-    entry *entry = malloc( sizeof( entry ) );
-    if( !entry ) {
-        printf("Could not allocate memory for new entry!");
-        exit(1);
-    }
-    
-    node *new = malloc( sizeof( node ) ), *collision;
-    if( !new ) {
-        printf("Could not allocate memory for new node!");
-        exit(1);
-    }
+	// determine whether our load factor is high enough to justify resizing
+	if( (float)( map->size + 1 ) / map->capacity > RESIZE_THRESHOLD ) {
+		resize( map, map->capacity * SCALING_FACTOR );
+	}
+	entry *entry = malloc( sizeof( entry ) );
+	if( !entry ) {
+		printf("Could not allocate memory for new entry!");
+		exit(1);
+	}
 
-    entry->key = key;
-    entry->value = value;
-    new->entry = *entry;
-    new->next = NULL;
+	node *new = malloc( sizeof( node ) ), *collision;
+	if( !new ) {
+		printf("Could not allocate memory for new node!");
+		exit(1);
+	}
 
-    int i = hash( map, key );
+	entry->key = key;
+	entry->value = value;
+	new->entry = *entry;
+	new->next = NULL;
+
+	int i = hash( map, key );
 	// if there isn't a list at this index yet, start one
-    if( map->entries[i] == NULL ) {
-        map->entries[i] = new;
-    } else { 
-        // move through the list--if we find a list entry whose key is the same as the new entry, 
+	if( map->entries[i] == NULL ) {
+		map->entries[i] = new;
+	} else { 
+		// move through the list--if we find a list entry whose key is the same as the new entry, 
 		// replace it. otherwise, add the new node to the end of the list
 		collision = map->entries[i];
 		do {
@@ -111,24 +111,24 @@ void put( hashmap *map, key_t key, val_t value ) {
 			}
 		} while( ( collision->next != NULL ) && ( collision = collision->next ) );
 		collision->next = new;
-    }
+	}
 }
 
 /**
  * Returns the value at key key_t
  */
 void *get( hashmap *map, key_t key ) {
-    node *current;
-    int h = hash( map, key );
-    if( map->entries[h] != NULL ) {
-        // finding a value at the hashed index isn't enough; we need to move through the list and match keys
+	node *current;
+	int h = hash( map, key );
+	if( map->entries[h] != NULL ) {
+		// finding a value at the hashed index isn't enough; we need to move through the list and match keys
 		// current implementation simply returns the first entry whose key is the same as the key_t key
-        for( current = map->entries[h]; current->next != NULL && strcmp( current->entry.key, key ) != 0; current = current->next );
+		for( current = map->entries[h]; current->next != NULL && strcmp( current->entry.key, key ) != 0; current = current->next );
 		if( strcmp( current->entry.key, key ) == 0 ) {
 			return current->entry.value;
 		}
-    }
-    return NULL;
+	}
+	return NULL;
 }
 
 /**
