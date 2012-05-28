@@ -1,5 +1,5 @@
-#ifndef IHASHMAP
-#define IHASHMAP
+#ifndef Ihashmap
+#define Ihashmap
 
 #define INITIAL_CAPACITY 10
 
@@ -10,26 +10,26 @@ typedef void *val_t;
 typedef struct { 
     key_t key;
     val_t value;
-} Entry; 
+} entry; 
 
-typedef struct Node {
-    Entry entry;
-    struct Node *next;
-} Node;
+typedef struct node {
+    entry entry;
+    struct node *next;
+} node;
 
 typedef struct {
     int size;
     int capacity;
-    Node **entries;
-} HashMap;
+    node **entries;
+} hashmap;
 
-HashMap *new( void );
-HashMap *createMap( int, int );
-void put( HashMap *, key_t, val_t );
-void *get( HashMap *, key_t );
-void delete( HashMap *, key_t );
-void resize( HashMap *, int );
-int hash( HashMap *, key_t );
-void pretty_print( HashMap * );
+hashmap *new_hashmap( void );
+hashmap *create_hashmap( int, int );
+void put( hashmap *, key_t, val_t );
+void *get( hashmap *, key_t );
+void delete( hashmap *, key_t );
+void resize( hashmap *, int );
+int hash( hashmap *, key_t );
+void pretty_print( hashmap * );
 
 #endif

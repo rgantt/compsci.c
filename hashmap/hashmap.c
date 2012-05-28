@@ -17,48 +17,48 @@
 #define SCALING_FACTOR 2
 
 /**
- * Replace a HashMap pointer with a newly-created HashMap containing all of the original elements but with "capacity"
+ * Replace a hashmap pointer with a newly-created hashmap containing all of the original elements but with "capacity"
  * indices in the internal array
  */
-void resize( HashMap *map, int capacity ) {
-    HashMap *newMap = createMap( map->size, capacity );
-    Node *current;
+void resize( hashmap *map, int capacity ) {
+    hashmap *new_map = create_hashmap( map->size, capacity );
+    node *current;
     int i;
     // we know how many elements are in the internal array; move through all of them
     for( i = 0; i < map->capacity; i++ ) {
         // move through the lists at each index and put them into the newly-allocated map
         for( current = map->entries[i]; current != NULL; current = current->next ) {
-            put( newMap, current->entry.key, current->entry.value );
+            put( new_map, current->entry.key, current->entry.value );
         }
     }
     // replace our original map pointer with a pointer to the address of the bigger map
-    *map = *newMap;
+    *map = *new_map;
 }
 
 /**
- * Creates a new HashMap with no elements and the default initial capacity
+ * Creates a new hashmap with no elements and the default initial capacity
  */
-HashMap *new() {
+hashmap *new_hashmap() {
     // just create a new map with 0 elements and a well-defined size
-    return createMap( 0, INITIAL_CAPACITY );
+    return create_hashmap( 0, INITIAL_CAPACITY );
 }
 
 /**
  * Allocates 
  */
-HashMap *createMap( int size, int capacity ) {
+hashmap *create_hashmap( int size, int capacity ) {
     // allocate the new memory for a hashmap
-    HashMap *map = malloc( sizeof( HashMap ) );
+    hashmap *map = malloc( sizeof( hashmap ) );
     if( !map ) {
-        printf("Could not allocate memory for new HashMap!");
+        printf("Could not allocate memory for new hashmap!");
         exit(1);
     }
     int i;
     map->size = size;
     map->capacity = capacity;
-    map->entries = malloc( sizeof( Node ) * capacity );
+    map->entries = malloc( sizeof( node ) * capacity );
     if( !map->entries ) {
-        printf("Could not allocate memory for new Node entries!");
+        printf("Could not allocate memory for new node entries!");
         exit(1);
     }
     // move through the newly-allocated memory and null out the values; start fresh
@@ -72,20 +72,20 @@ HashMap *createMap( int size, int capacity ) {
  * Places an entry object at a particular key. Handles situations where there are key collisions
  * caused by inefficient hashing. Also handles key overwrite situations.
  */
-void put( HashMap *map, key_t key, val_t value ) {
+void put( hashmap *map, key_t key, val_t value ) {
     // determine whether our load factor is high enough to justify resizing
     if( (float)( map->size + 1 ) / map->capacity > RESIZE_THRESHOLD ) {
         resize( map, map->capacity * SCALING_FACTOR );
     }
-    Entry *entry = malloc( sizeof( Entry ) );
+    entry *entry = malloc( sizeof( entry ) );
     if( !entry ) {
-        printf("Could not allocate memory for new Entry!");
+        printf("Could not allocate memory for new entry!");
         exit(1);
     }
     
-    Node *new = malloc( sizeof( Node ) ), *collision;
+    node *new = malloc( sizeof( node ) ), *collision;
     if( !new ) {
-        printf("Could not allocate memory for new Node!");
+        printf("Could not allocate memory for new node!");
         exit(1);
     }
 
@@ -117,8 +117,8 @@ void put( HashMap *map, key_t key, val_t value ) {
 /**
  * Returns the value at key key_t
  */
-void *get( HashMap *map, key_t key ) {
-    Node *current;
+void *get( hashmap *map, key_t key ) {
+    node *current;
     int h = hash( map, key );
     if( map->entries[h] != NULL ) {
         // finding a value at the hashed index isn't enough; we need to move through the list and match keys
@@ -134,9 +134,9 @@ void *get( HashMap *map, key_t key ) {
 /**
  * This is awful, and doesn't take into account the fact that we are chaining
  */
-void delete( HashMap *map, key_t key ) {
+void delete( hashmap *map, key_t key ) {
     int h = hash( map, key );
-	Node *current, *previous;
+	node *current, *previous;
 	current = map->entries[h];
 	// if the list is only one element, just clear out the array index
 	if( current->next == NULL ) {
@@ -150,7 +150,7 @@ void delete( HashMap *map, key_t key ) {
 	// easily update the pointers to remove the deleted one
 	do {
 		if( strcmp( current->entry.key, key ) == 0 ) {
-			Node *tmp = current;
+			node *tmp = current;
 			previous->next = current->next;
 			free( tmp );
 		}
@@ -160,7 +160,7 @@ void delete( HashMap *map, key_t key ) {
 /**
  * Compute an integer hash of the key provided and then return its modulus w.r.t. the size of the internal array
  */
-int hash( HashMap *map, key_t key ) {
+int hash( hashmap *map, key_t key ) {
     int total = 0, i;
     for( i = 0; i < sizeof( key ); i++ ) {
         total += (int)(key + i)[0];
@@ -172,9 +172,9 @@ int hash( HashMap *map, key_t key ) {
  * Print out a nice-looking representation of a given hashmap. Shows the structure of the internal
  * array, as well as the structure of the linked list that each index holds.
  */
-void pretty_print( HashMap *map ) {
+void pretty_print( hashmap *map ) {
 	int i;
-	Node *entry;
+	node *entry;
 	for( i = 0; i < map->capacity; i++ ) {
 		printf( "entries[%d]:\n", i );
 		entry = map->entries[i];

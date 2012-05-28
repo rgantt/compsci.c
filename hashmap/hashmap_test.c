@@ -5,13 +5,13 @@
 #include "hashmap.h"
 
 void hashmap_test_add() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	put( map, "foo", "this is foo" );
 	assert_equals_str( "this is foo", get( map, "foo" ), "add" );	
 }
 
 void hashmap_test_add_hash_collision() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	// these two generate the same index
 	put( map, "foo", "this is foo" );
 	put( map, "poo", "this is poo" );
@@ -20,7 +20,7 @@ void hashmap_test_add_hash_collision() {
 }
 
 void hashmap_test_add_key_collision() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	char *expected = "this is now foo";
 	put( map, "foo", "this was foo" );
 	put( map, "foo", expected );
@@ -28,19 +28,19 @@ void hashmap_test_add_key_collision() {
 }
 
 void hashmap_test_get_unset_key() { 
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	put( map, "foo", "this is foo" );
 	assert_equals( NULL, get( map, "bar" ), "get_unset_key" );
 }
 
 void hashmap_test_get() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	put( map, "foo", "this is foo" );
 	assert_equals_str( "this is foo", get( map, "foo" ), "get" );
 }
 
 void hashmap_test_auto_scaling() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	int i;
 	char *desc = "auto_scaling";
 	char *keys[] = { "test", "poo", "bar", "tweak", "fark", "adama", "close", "duck", "goose", "chode" };
@@ -56,7 +56,7 @@ void hashmap_test_auto_scaling() {
 }
 
 void hashmap_test_holds_any_value() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	// Make an arbitrarily typed blob
 	typedef struct {
 		int i;
@@ -77,14 +77,14 @@ void hashmap_test_holds_any_value() {
 }
 
 void hashmap_test_delete() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	put( map, "foo", "this is foo" );
 	delete( map, "foo" );
 	assert_equals( NULL, get( map, "foo" ), "delete" );
 }
 
 void hashmap_test_delete_after_key_collision() {
-	HashMap *map = new();
+	hashmap *map = new_hashmap();
 	put( map, "foo", "this was foo" );
 	put( map, "foo", "this is foo" );
 	delete( map, "foo" );
@@ -92,8 +92,8 @@ void hashmap_test_delete_after_key_collision() {
 }
 
 void hashmap_test_delete_after_hash_collision() {
-	HashMap *map = new();
-	// these both hash to the same value with the current implementation of hash( int, HashMap * )
+	hashmap *map = new_hashmap();
+	// these both hash to the same value with the current implementation of hash( int, hashmap * )
 	put( map, "foo", "this is foo" );
 	put( map, "poo", "this is poo" );
 	delete( map, "poo" );
