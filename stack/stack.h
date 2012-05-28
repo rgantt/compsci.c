@@ -13,12 +13,12 @@ typedef struct {
 } stack;
 
 stack *new_stack();
-stack *create_stack( int );
-void resize( stack *, int );
-int empty( stack * );
+stack *create_stack( const int );
+void resize( stack *, const int );
+int empty( const stack * );
 void push( stack *, element );
 element pop( stack * );
 element peek( stack * );
-void pretty_print( stack * );
+void pretty_print( const stack * );
 
 #endif
