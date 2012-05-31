@@ -8,6 +8,7 @@ void stack_test_push() {
 	stack *s = new_stack();
 	push( s, "first" );
 	assert_equals_str( "first", pop(s), "push" );
+	destroy_stack(s);
 }
 
 void stack_test_peek_does_not_modify_stack() {
@@ -15,6 +16,7 @@ void stack_test_peek_does_not_modify_stack() {
 	push( s, "first" );
 	peek(s);
 	assert_equals_str( "first", pop(s), "peek_does_not_modify_stack" );
+	destroy_stack(s);
 }
 
 void stack_test_lifo_order_preserved() {
@@ -27,6 +29,7 @@ void stack_test_lifo_order_preserved() {
 	for( i -= 1; i >= 0; i-- ) {
 		assert_equals_str( elements[i], pop(s), "lifo_order_preserved" );
 	}
+	destroy_stack(s);
 }
 
 void stack_test_resizing_does_not_affect_order() {
@@ -40,6 +43,7 @@ void stack_test_resizing_does_not_affect_order() {
 	for( i -= 1; i >= 0; i-- ) {
 		assert_equals_str( elements[i], pop(s), "resizing_does_not_affect_order" );
 	}
+	destroy_stack(s);
 }
 
 int main( int argc, char **argv ) {

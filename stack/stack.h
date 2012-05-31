@@ -14,7 +14,8 @@ typedef struct {
 
 stack *new_stack();
 stack *create_stack( const int );
-void resize( stack *, const int );
+void destroy_stack( stack * );
+stack *resize( stack *, const int );
 int empty( const stack * );
 void push( stack *, element );
 element pop( stack * );

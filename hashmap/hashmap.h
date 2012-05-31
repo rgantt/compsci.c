@@ -1,19 +1,19 @@
-#ifndef Ihashmap
-#define Ihashmap
+#ifndef IHASHMAP
+#define IHASHMAP
 
 #define INITIAL_CAPACITY 10
 
-typedef char *key_t;
+typedef char *hashmap_key_t;
 // values can be of arbitrary type; char * most commonly
-typedef void *val_t;
+typedef void *hashmap_val_t;
 
 typedef struct { 
-    key_t key;
-    val_t value;
+    hashmap_key_t key;
+    hashmap_val_t value;
 } entry; 
 
 typedef struct node {
-    entry entry;
+    entry *entry;
     struct node *next;
 } node;
 
@@ -25,11 +25,12 @@ typedef struct {
 
 hashmap *new_hashmap( void );
 hashmap *create_hashmap( int, int );
-void put( hashmap *, key_t, val_t );
-void *get( hashmap *, key_t );
-void delete( hashmap *, key_t );
-void resize( hashmap *, int );
-int hash( hashmap *, key_t );
+void destroy_hashmap( hashmap * );
+void put( hashmap *, hashmap_key_t, hashmap_val_t );
+void *get( hashmap *, hashmap_key_t );
+void delete( hashmap *, hashmap_key_t );
+hashmap *resize( hashmap *, int );
+int hash( hashmap *, hashmap_key_t );
 void pretty_print( hashmap * );
 
 #endif

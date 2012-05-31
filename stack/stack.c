@@ -22,7 +22,7 @@ stack *create_stack( const int capacity ) {
 	}
 	s->capacity = capacity;
 	s->top = -1;
-	s->elements = malloc( sizeof( element ) * capacity );
+	s->elements = malloc( sizeof( element ) * ( capacity + 1 ) );
 	if( !s->elements ) {
 		printf("Could not allocate memory for stack elements!");
 		exit(1);
@@ -33,11 +33,16 @@ stack *create_stack( const int capacity ) {
 	return s;
 }
 
+void destroy_stack( stack *s ) {
+    free(s->elements);
+    free(s);
+}
+
 /**
  * Resizes the stack by creating a new stack whose size is double the original stack size using
  * only stack operations and a temporary stack
  */
-void resize( stack *s, const int capacity ) {
+stack *resize( stack *s, const int capacity ) {
 	stack *new_stack = create_stack( capacity );
 	new_stack->top = s->top;
 	stack *tmp_stack = create_stack( s->capacity );
@@ -49,7 +54,9 @@ void resize( stack *s, const int capacity ) {
 	while( ( e = pop(tmp_stack) ) != NULL ) {
 		push( new_stack, e );
 	}
-	*s = *new_stack;
+	destroy_stack(tmp_stack);
+	destroy_stack(s);
+	return new_stack;
 }
 
 /**
@@ -63,10 +70,10 @@ int empty( const stack *s ) {
  * Pushes an element onto the top of the stack and updates the index pointer
  */
 void push( stack *s, element e ) {
-	if( ++s->top > s->capacity ) {
-		resize( s, s->capacity * SCALING_FACTOR );
+	if( ( s->top + 1 ) > s->capacity ) {
+		s = resize( s, s->capacity * SCALING_FACTOR );
 	}
-	s->elements[s->top] = e;
+	s->elements[++s->top] = e;
 }
 
 /**

@@ -1,11 +1,14 @@
 suite:
-	gcc -Wall -c suite.c -o suite.o
+	cc -Wall -g -I. -c suite.c -o suite.o
 
 clean:
-	rm suite.o a.exe
+	rm -f suite.o a.out
+
+clean-win:
+	rm -f suite.o a.exe
 	
 stack: suite
-	gcc -Wall -I. stack/*.c suite.o
+	cc -Wall -g -I. stack/*.c suite.o
 	
 hashmap: suite
-	gcc -Wall -I. hashmap/*.c suite.o
+	cc -Wall -g -I. hashmap/*.c suite.o
