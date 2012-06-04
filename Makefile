@@ -12,3 +12,6 @@ stack: suite
 	
 hashmap: suite
 	cc -Wall -g -I. hashmap/*.c suite.o
+
+queue: suite
+	cc -Wall -g -I. queue/*.c suite.o
