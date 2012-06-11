@@ -51,6 +51,7 @@ void enqueue( queue *q, element e ) {
     }
     q->elements[q->tail] = e;
     if( q->tail == q->capacity ) {
+        printf("huckin' a jimmy\n");
         q->tail = 0;
     } else {
         q->tail++;

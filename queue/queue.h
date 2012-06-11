@@ -1,11 +1,15 @@
 #ifndef IQUEUE
 #define IQUEUE
 
+#define QUEUE_STACK 0
 #define INITIAL_CAPACITY 5
 #define SCALING_FACTOR 2
 
 typedef char* element;
 
+/**
+ * this is implementation-specific
+ */
 typedef struct {
     int capacity;
     int count;
@@ -14,11 +18,18 @@ typedef struct {
     element* elements;
 } queue;
 
+/**
+ * "public" api
+ */
 queue *new_queue();
-queue *create_queue( const int );
 void destroy_queue( queue * );
-queue *resize( queue *, const int );
 void enqueue( queue *, element );
 element dequeue( queue * );
+
+/**
+ * "private"/implementation-specific api
+ */
+queue *resize( queue *, const int );
+queue *create_queue( const int );
 
 #endif
