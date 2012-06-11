@@ -4,8 +4,8 @@
 typedef char* list_entry;
 
 typedef struct node {
-	struct node *next;
-	list_entry value;
+    struct node *next;
+    list_entry value;
 } node;
 
 node *new_node( list_entry );

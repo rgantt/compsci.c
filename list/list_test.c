@@ -5,17 +5,17 @@
 #include "list.h"
 
 void list_test_add() {
-	node *first = new_node("first");
-	node *second = new_node("second");
-	node *third = new_node("third");
-	
+    node *first = new_node("first");
+    node *second = new_node("second");
+    node *third = new_node("third");
+
     add_node( first, second );
     add_node( first, third );
-    
+
     assert_equals_str( first->next->value, "second", "test_add" );
     assert_equals_str( first->next->next->value, "third", "test_add" );
 
-	destroy_list(first);
+    destroy_list(first);
 }
 
 void list_test_find() {
@@ -51,13 +51,13 @@ void list_test_remove() {
 }
 
 int main( int argc, char **argv ) {
-	suite_init();
+    suite_init();
 
-	list_test_add();
-	list_test_find();
-	list_test_remove();
+    list_test_add();
+    list_test_find();
+    list_test_remove();
 
-	suite_report();
-	
+    suite_report();
+
     return 0;
 }
