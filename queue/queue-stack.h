@@ -1,6 +1,8 @@
 #ifndef IQUEUE
 #define IQUEUE
 
+#define QUEUE_STACK 1
+
 #include "stack.h"
 
 typedef char* element;

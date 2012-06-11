@@ -23,4 +23,4 @@ queue: suite
 	cc -Wall -g -I. queue/queue.c queue/queue_test.c suite.o
 	
 queue-stack: suite
-	cc -Wall -g -I. -Istack stack/stack.c queue/queue-stack.c queue/queue-stack_test.c suite.o
+	cc -Wall -g -I. -Istack stack/stack.c queue/queue-stack.c queue/queue_test.c suite.o
