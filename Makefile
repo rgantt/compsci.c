@@ -7,6 +7,9 @@ clean:
 clean-win:
 	rm -f suite.o a.exe
 	
+list: suite
+	cc -Wall -g -I. list/*.c suite.o
+	
 stack: suite
 	cc -Wall -g -I. stack/*.c suite.o
 	
