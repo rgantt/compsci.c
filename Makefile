@@ -24,3 +24,6 @@ queue: suite
 	
 queue-stack: suite
 	cc -Wall -g -I. -Istack stack/stack.c queue/queue-stack.c queue/queue_test.c suite.o
+
+gradient-descent:
+	cc -Wall -std=c99 -g machine-learning/gradient_descent.c
